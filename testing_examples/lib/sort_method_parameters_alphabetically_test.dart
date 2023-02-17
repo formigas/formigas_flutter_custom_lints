@@ -15,10 +15,3 @@ class A {
     required int b,
   }) {}
 }
-
-// expect_lint: sort_function_parameters_alphabetically
-void unsortedMethodParameters4({
-  required int c,
-  required int b,
-  required int a,
-}) {}
