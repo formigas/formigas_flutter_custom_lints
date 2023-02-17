@@ -13,6 +13,5 @@ dependencies:
   custom_lint: ^0.2.5
 
 dev_dependencies:
-  custom_lint:
   lints: ^2.0.0
   test: ^1.21.0
