@@ -4,7 +4,7 @@ void function1(
   double c,
 ) {}
 
-// expect_lint: sort_function_parameters_alphabetically
+// expect_lint: sort_function_declaration_parameters_alphabetically
 void function1Unsorted(
   double c,
   String b,
@@ -17,7 +17,7 @@ void function2(
   required double c,
 }) {}
 
-// expect_lint: sort_function_parameters_alphabetically
+// expect_lint: sort_function_declaration_parameters_alphabetically
 void function2unsorted(
   double c,
   String b, {
@@ -30,7 +30,7 @@ void function3(
   required double c,
 }) {}
 
-// expect_lint: sort_function_parameters_alphabetically
+// expect_lint: sort_function_declaration_parameters_alphabetically
 void function3Unsorted(
   double c,
   double d, {
@@ -38,7 +38,7 @@ void function3Unsorted(
   required int a,
 }) {}
 
-// expect_lint: sort_function_parameters_alphabetically
+// expect_lint: sort_function_declaration_parameters_alphabetically
 void function3Unsorted2(
   double d,
   double c, {
@@ -60,7 +60,7 @@ class A {
     double c,
   ) {}
 
-  // expect_lint: sort_function_parameters_alphabetically
+  // expect_lint: sort_function_declaration_parameters_alphabetically
   void function1Unsorted(
     double c,
     String b,
@@ -73,7 +73,7 @@ class A {
     required double c,
   }) {}
 
-  // expect_lint: sort_function_parameters_alphabetically
+  // expect_lint: sort_function_declaration_parameters_alphabetically
   void function2unsorted(
     double c,
     String b, {
@@ -86,7 +86,7 @@ class A {
     required double c,
   }) {}
 
-  // expect_lint: sort_function_parameters_alphabetically
+  // expect_lint: sort_function_declaration_parameters_alphabetically
   void function3Unsorted(
     double c,
     double d, {
@@ -94,7 +94,7 @@ class A {
     required int a,
   }) {}
 
-  // expect_lint: sort_function_parameters_alphabetically
+  // expect_lint: sort_function_declaration_parameters_alphabetically
   void function3Unsorted2(
     double d,
     double c, {

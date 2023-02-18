@@ -10,8 +10,8 @@ class SortFunctionDeclarationParametersAlphabetically extends DartLintRule {
   SortFunctionDeclarationParametersAlphabetically() : super(code: _code);
 
   static const _code = LintCode(
-    name: 'sort_function_parameters_alphabetically',
-    problemMessage: 'Sort function parameters alphabetically.',
+    name: 'sort_function_declaration_parameters_alphabetically',
+    problemMessage: 'Sort parameters alphabetically.',
   );
 
   @override
