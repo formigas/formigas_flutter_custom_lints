@@ -1,93 +1,95 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer/source/source_range.dart';
+import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:formigas_flutter_lints/lints/sorting/common.dart';
 
 class SortFunctionDeclarationParametersAlphabetically extends DartLintRule {
-  SortFunctionDeclarationParametersAlphabetically() : super(code: _code);
+  const SortFunctionDeclarationParametersAlphabetically() : super(code: _code);
 
-  static const _code = LintCode(
+  static const LintCode _code = LintCode(
     name: 'sort_function_declaration_parameters_alphabetically',
     problemMessage: 'Sort parameters alphabetically.',
   );
 
   @override
   void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
+    final CustomLintResolver resolver,
+    final ErrorReporter reporter,
+    final CustomLintContext context,
   ) {
-    context.registry.addMethodDeclaration((node) {
+    context.registry.addMethodDeclaration((final MethodDeclaration node) {
       checkAlphabeticallySorted(code, node.declaredElement, reporter);
     });
 
-    context.registry.addFunctionDeclaration((node) {
+    context.registry.addFunctionDeclaration((final FunctionDeclaration node) {
       checkAlphabeticallySorted(code, node.declaredElement, reporter);
     });
   }
 
   @override
-  List<Fix> getFixes() => [
+  List<Fix> getFixes() => <Fix>[
         SortFunctionDeclarationParametersAlphabeticallyFix(),
       ];
 }
 
 class SortFunctionInvocationParametersAlphabetically extends DartLintRule {
-  SortFunctionInvocationParametersAlphabetically() : super(code: _code);
+  const SortFunctionInvocationParametersAlphabetically() : super(code: _code);
 
-  static const _code = LintCode(
+  static const LintCode _code = LintCode(
     name: 'sort_function_invocation_parameters_alphabetically',
     problemMessage: 'Sort parameters alphabetically.',
   );
 
   @override
   void run(
-      CustomLintResolver resolver,
-      ErrorReporter reporter,
-      CustomLintContext context,
-      ) {
-
-    context.registry.addMethodInvocation((node) {
-      List<String> namedParams = node.argumentList.arguments
+    final CustomLintResolver resolver,
+    final ErrorReporter reporter,
+    final CustomLintContext context,
+  ) {
+    context.registry.addMethodInvocation((final MethodInvocation node) {
+      final List<String> namedParams = node.argumentList.arguments
           .whereType<NamedExpression>()
-          .map((n) => n.name.label.name)
+          .map((final NamedExpression n) => n.name.label.name)
           .toList();
 
-      final sortedParams = List<String>.from(namedParams)..sort();
+      final List<String> sortedParams = List<String>.from(namedParams)..sort();
 
-      if (!ListEquality().equals(namedParams, sortedParams)) {
+      if (!const ListEquality<String>().equals(namedParams, sortedParams)) {
         reporter.reportErrorForNode(code, node);
       }
     });
   }
 
   @override
-  List<Fix> getFixes() => [
-    SortFunctionInvocationParametersAlphabeticallyFix(),
-  ];
+  List<Fix> getFixes() => <Fix>[
+        SortFunctionInvocationParametersAlphabeticallyFix(),
+      ];
 }
 
 class SortFunctionDeclarationParametersAlphabeticallyFix extends DartFix {
   @override
   void run(
-    CustomLintResolver resolver,
-    ChangeReporter reporter,
-    CustomLintContext context,
-    AnalysisError analysisError,
-    List<AnalysisError> others,
+    final CustomLintResolver resolver,
+    final ChangeReporter reporter,
+    final CustomLintContext context,
+    final AnalysisError analysisError,
+    final List<AnalysisError> others,
   ) {
-    context.registry.addFunctionDeclaration((node) {
-      if (!analysisError.sourceRange.intersects(node.sourceRange)) return;
+    context.registry.addFunctionDeclaration((final FunctionDeclaration node) {
+      if (!analysisError.sourceRange.intersects(node.sourceRange)) {
+        return;
+      }
 
-      final changeBuilder = reporter.createChangeBuilder(
+      final ChangeBuilder changeBuilder = reporter.createChangeBuilder(
         message: 'Sort parameters alphabetically',
         priority: 1,
       );
-      FormalParameterList? parameterList = node.functionExpression.parameters;
+      final FormalParameterList? parameterList =
+          node.functionExpression.parameters;
 
       fixParameterSorting(
         changeBuilder: changeBuilder,
@@ -95,57 +97,62 @@ class SortFunctionDeclarationParametersAlphabeticallyFix extends DartFix {
       );
     });
 
-    context.registry.addMethodDeclaration((node) {
-      if (!analysisError.sourceRange.intersects(node.sourceRange)) return;
+    context.registry.addMethodDeclaration((final MethodDeclaration node) {
+      if (!analysisError.sourceRange.intersects(node.sourceRange)) {
+        return;
+      }
 
-      final changeBuilder = reporter.createChangeBuilder(
+      final ChangeBuilder changeBuilder = reporter.createChangeBuilder(
         message: 'Sort parameters alphabetically',
         priority: 1,
       );
-      FormalParameterList? parameterList = node.parameters;
+      final FormalParameterList? parameterList = node.parameters;
 
       fixParameterSorting(
         changeBuilder: changeBuilder,
         parameterList: parameterList,
       );
     });
-
   }
 }
 
 class SortFunctionInvocationParametersAlphabeticallyFix extends DartFix {
   @override
   void run(
-      CustomLintResolver resolver,
-      ChangeReporter reporter,
-      CustomLintContext context,
-      AnalysisError analysisError,
-      List<AnalysisError> others,
-      ) {
+    final CustomLintResolver resolver,
+    final ChangeReporter reporter,
+    final CustomLintContext context,
+    final AnalysisError analysisError,
+    final List<AnalysisError> others,
+  ) {
+    context.registry.addMethodInvocation((final MethodInvocation node) {
+      if (!analysisError.sourceRange.intersects(node.sourceRange)) {
+        return;
+      }
 
-    context.registry.addMethodInvocation((node) {
-      if (!analysisError.sourceRange.intersects(node.sourceRange)) return;
-
-      final changeBuilder = reporter.createChangeBuilder(
+      reporter
+          .createChangeBuilder(
         message: 'Sort parameters alphabetically',
         priority: 1,
-      );
+      )
+          .addDartFileEdit((final DartFileEditBuilder builder) {
+        final ArgumentList argumentList = node.argumentList;
 
-      changeBuilder.addDartFileEdit((builder) {
-        ArgumentList argumentList = node.argumentList;
-
-        argumentList.arguments.sort((first, second) {
+        argumentList.arguments
+            .sort((final Expression first, final Expression second) {
           if ((first.staticParameterElement?.isPositional ?? false) &&
               (second.staticParameterElement?.isPositional ?? false)) {
-            return first.staticParameterElement?.name.toString().compareTo(
-                second.staticParameterElement?.name.toString() ?? '') ??
+            return first.staticParameterElement?.name.compareTo(
+                      second.staticParameterElement?.name ?? '',
+                    ) ??
                 0;
           } else if ((second.staticParameterElement?.isNamed ?? false) &&
               (second.staticParameterElement?.isNamed ?? false)) {
-            return first.staticParameterElement?.name.toString().compareTo(
-                second.staticParameterElement?.name.toString() ?? '') ??
+            return first.staticParameterElement?.name.compareTo(
+                      second.staticParameterElement?.name ?? '',
+                    ) ??
                 0;
-          } else if ((second.staticParameterElement?.isPositional ?? false)) {
+          } else if (second.staticParameterElement?.isPositional ?? false) {
             return -1;
           } else {
             return 1;

@@ -1,31 +1,33 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
-import 'package:analyzer/source/source_range.dart';
+import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:formigas_flutter_lints/lints/sorting/common.dart';
 
 class SortConstructorDeclarationParametersAlphabetically extends DartLintRule {
-  SortConstructorDeclarationParametersAlphabetically() : super(code: _code);
+  const SortConstructorDeclarationParametersAlphabetically()
+      : super(code: _code);
 
-  static const _code = LintCode(
+  static const LintCode _code = LintCode(
     name: 'sort_constructor_parameters_alphabetically',
     problemMessage: 'Sort constructor parameters alphabetically.',
   );
 
   @override
   void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
+    final CustomLintResolver resolver,
+    final ErrorReporter reporter,
+    final CustomLintContext context,
   ) {
-    context.registry.addConstructorDeclaration((node) {
+    context.registry
+        .addConstructorDeclaration((final ConstructorDeclaration node) {
       checkAlphabeticallySorted(_code, node.declaredElement, reporter);
     });
   }
 
   @override
-  List<Fix> getFixes() => [
+  List<Fix> getFixes() => <Fix>[
         SortConstructorParameterListAlphabeticallyFix(),
       ];
 }
@@ -33,22 +35,25 @@ class SortConstructorDeclarationParametersAlphabetically extends DartLintRule {
 class SortConstructorParameterListAlphabeticallyFix extends DartFix {
   @override
   void run(
-    CustomLintResolver resolver,
-    ChangeReporter reporter,
-    CustomLintContext context,
-    AnalysisError analysisError,
-    List<AnalysisError> others,
+    final CustomLintResolver resolver,
+    final ChangeReporter reporter,
+    final CustomLintContext context,
+    final AnalysisError analysisError,
+    final List<AnalysisError> others,
   ) {
-    context.registry.addConstructorDeclaration((node) {
-      if (!analysisError.sourceRange.intersects(node.sourceRange)) return;
+    context.registry
+        .addConstructorDeclaration((final ConstructorDeclaration node) {
+      if (!analysisError.sourceRange.intersects(node.sourceRange)) {
+        return;
+      }
 
-      final changeBuilder = reporter.createChangeBuilder(
+      final ChangeBuilder changeBuilder = reporter.createChangeBuilder(
         message: 'Sort parameters alphabetically',
         priority: 1,
       );
-      FormalParameterList parameterList = node.parameters;
+      final FormalParameterList parameterList = node.parameters;
 
-      changeBuilder.addDartFileEdit((builder) {
+      changeBuilder.addDartFileEdit((final DartFileEditBuilder builder) {
         fixParameterSorting(
           changeBuilder: changeBuilder,
           parameterList: parameterList,

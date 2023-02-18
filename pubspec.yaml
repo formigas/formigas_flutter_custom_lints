@@ -9,9 +9,9 @@ environment:
 dependencies:
   analyzer: ^5.0.0
   analyzer_plugin: ^0.11.2
-  custom_lint_builder: ^0.2.9
-  custom_lint: ^0.2.5
   collection: ^1.15.0
+  custom_lint: ^0.2.5
+  custom_lint_builder: ^0.2.9
 
 dev_dependencies:
   lints: ^2.0.0

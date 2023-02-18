@@ -6,12 +6,12 @@ PluginBase createPlugin() => FormigasLint();
 
 class FormigasLint extends PluginBase {
   @override
-  List<LintRule> getLintRules(CustomLintConfigs configs) => [
-        SortConstructorDeclarationParametersAlphabetically(),
-        SortFunctionDeclarationParametersAlphabetically(),
-        SortFunctionInvocationParametersAlphabetically(),
+  List<LintRule> getLintRules(final CustomLintConfigs configs) => <LintRule>[
+        const SortConstructorDeclarationParametersAlphabetically(),
+        const SortFunctionDeclarationParametersAlphabetically(),
+        const SortFunctionInvocationParametersAlphabetically(),
       ];
 
   @override
-  List<Assist> getAssists() => [];
+  List<Assist> getAssists() => <Assist>[];
 }
