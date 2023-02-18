@@ -27,7 +27,7 @@ class SortMethodDeclarationParametersAlphabetically extends DartLintRule {
 
   @override
   List<Fix> getFixes() => [
-        SortMethodDeclarationParameterListAlphabeticallyFix(),
+        SortMethodDeclarationParametersAlphabeticallyFix(),
       ];
 }
 
@@ -60,11 +60,11 @@ class SortMethodInvocationArgumentsAlphabetically extends DartLintRule {
 
   @override
   List<Fix> getFixes() => [
-    SortMethodInvocationArgumentsListAlphabeticallyFix(),
+    SortMethodInvocationArgumentsAlphabeticallyFix(),
       ];
 }
 
-class SortMethodDeclarationParameterListAlphabeticallyFix extends DartFix {
+class SortMethodDeclarationParametersAlphabeticallyFix extends DartFix {
   @override
   void run(
     CustomLintResolver resolver,
@@ -97,7 +97,7 @@ class SortMethodDeclarationParameterListAlphabeticallyFix extends DartFix {
   }
 }
 
-class SortMethodInvocationArgumentsListAlphabeticallyFix extends DartFix {
+class SortMethodInvocationArgumentsAlphabeticallyFix extends DartFix {
   @override
   void run(
     CustomLintResolver resolver,
