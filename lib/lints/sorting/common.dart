@@ -22,3 +22,19 @@ void checkAlphabeticallySorted(
     reporter.reportErrorForElement(code, element);
   }
 }
+
+void checkAlphabeticallySortedArguments(
+  ErrorCode code,
+  ArgumentList? arguments,
+  ErrorReporter reporter,
+) {
+  List<Expression>? sortedParameters = arguments?.arguments.sortedByCompare(
+      (element) => element.staticParameterElement?.name,
+      (a, b) => b == null ? 0 : a?.compareTo(b) ?? 0);
+
+  if (arguments != null &&
+      sortedParameters != null &&
+      !IterableEquality().equals(arguments.arguments, sortedParameters)) {
+    reporter.reportErrorForOffset(code, sortedParameters.first.offset, 1);
+  }
+}

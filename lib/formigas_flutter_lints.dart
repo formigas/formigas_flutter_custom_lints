@@ -8,7 +8,8 @@ PluginBase createPlugin() => FormigasLint();
 class FormigasLint extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
-        SortMethodParametersAlphabetically(),
+        SortMethodDeclarationParametersAlphabetically(),
+        SortMethodInvocationArgumentsAlphabetically(),
         SortConstructorParametersAlphabetically(),
         SortFunctionParametersAlphabetically(),
       ];
