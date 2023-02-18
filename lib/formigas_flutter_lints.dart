@@ -12,6 +12,7 @@ class FormigasLint extends PluginBase {
         SortMethodInvocationArgumentsAlphabetically(),
         SortConstructorParametersAlphabetically(),
         SortFunctionParametersAlphabetically(),
+        SortFunctionInvocationArgumentsAlphabetically(),
       ];
 
   @override
