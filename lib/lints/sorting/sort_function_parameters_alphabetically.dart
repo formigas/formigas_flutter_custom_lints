@@ -53,7 +53,7 @@ class SortFunctionParametersAlphabeticallyFix extends DartFix {
       );
       FormalParameterList? parameterList = node.functionExpression.parameters;
 
-      fixSorting(
+      fixParameterSorting(
         changeBuilder: changeBuilder,
         parameterList: parameterList,
       );
@@ -68,36 +68,11 @@ class SortFunctionParametersAlphabeticallyFix extends DartFix {
       );
       FormalParameterList? parameterList = node.parameters;
 
-      fixSorting(
+      fixParameterSorting(
         changeBuilder: changeBuilder,
         parameterList: parameterList,
       );
     });
   }
 
-  void fixSorting({
-    required ChangeBuilder changeBuilder,
-    required FormalParameterList? parameterList,
-  }) {
-    changeBuilder.addDartFileEdit((builder) {
-      if (parameterList != null) {
-        parameterList.parameters
-            .sort((FormalParameter first, FormalParameter second) {
-          if (first.isPositional && second.isPositional) {
-            return first.name.toString().compareTo(second.name.toString());
-          } else if (first.isNamed && second.isNamed) {
-            return first.name.toString().compareTo(second.name.toString());
-          } else if (first.isPositional) {
-            return -1;
-          } else {
-            return 1;
-          }
-        });
-        builder.addSimpleReplacement(
-          SourceRange(parameterList.offset, parameterList.length),
-          parameterList.toSource(),
-        );
-      }
-    });
-  }
 }

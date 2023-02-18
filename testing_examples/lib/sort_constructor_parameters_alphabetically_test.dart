@@ -23,4 +23,17 @@ class A {
     required this.b,
     required this.c,
   });
+
+  const A.fourth(
+    this.b, {
+    required this.a,
+    required this.c,
+  });
+
+  // expect_lint: sort_constructor_parameters_alphabetically
+  const A.fifth(
+    this.c, {
+    required this.b,
+    required this.a,
+  });
 }

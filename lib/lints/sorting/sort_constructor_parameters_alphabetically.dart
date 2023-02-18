@@ -5,8 +5,8 @@ import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:formigas_flutter_lints/lints/sorting/common.dart';
 
-class SortConstructorParametersAlphabetically extends DartLintRule {
-  SortConstructorParametersAlphabetically() : super(code: _code);
+class SortConstructorDeclarationParametersAlphabetically extends DartLintRule {
+  SortConstructorDeclarationParametersAlphabetically() : super(code: _code);
 
   static const _code = LintCode(
     name: 'sort_constructor_parameters_alphabetically',
@@ -49,12 +49,9 @@ class SortConstructorParameterListAlphabeticallyFix extends DartFix {
       FormalParameterList parameterList = node.parameters;
 
       changeBuilder.addDartFileEdit((builder) {
-        parameterList.parameters.sort(
-            (FormalParameter first, FormalParameter second) =>
-                first.name.toString().compareTo(second.name.toString()));
-        builder.addSimpleReplacement(
-          SourceRange(parameterList.offset, parameterList.length),
-          parameterList.toSource(),
+        fixParameterSorting(
+          changeBuilder: changeBuilder,
+          parameterList: parameterList,
         );
       });
     });

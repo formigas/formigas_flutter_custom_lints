@@ -51,3 +51,29 @@ void checkAlphabeticallySortedArguments(
     reporter.reportErrorForOffset(code, sortedParameters.first.offset, 1);
   }
 }
+
+void fixParameterSorting({
+  required ChangeBuilder changeBuilder,
+  required FormalParameterList? parameterList,
+}) {
+  changeBuilder.addDartFileEdit((builder) {
+    if (parameterList != null) {
+      parameterList.parameters
+          .sort((FormalParameter first, FormalParameter second) {
+        if (first.isPositional && second.isPositional) {
+          return first.name.toString().compareTo(second.name.toString());
+        } else if (first.isNamed && second.isNamed) {
+          return first.name.toString().compareTo(second.name.toString());
+        } else if (first.isPositional) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+      builder.addSimpleReplacement(
+        SourceRange(parameterList.offset, parameterList.length),
+        parameterList.toSource(),
+      );
+    }
+  });
+}
