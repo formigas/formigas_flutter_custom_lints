@@ -22,37 +22,3 @@ void checkAlphabeticallySorted(
     reporter.reportErrorForElement(code, element);
   }
 }
-
-class SortMethodOrFunctionParametersAlphabeticallyFix extends DartFix {
-  @override
-  void run(
-    CustomLintResolver resolver,
-    ChangeReporter reporter,
-    CustomLintContext context,
-    AnalysisError analysisError,
-    List<AnalysisError> others,
-  ) {
-    context.registry.addMethodDeclaration((node) {
-      if (!analysisError.sourceRange.intersects(node.sourceRange)) return;
-
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Sort parameters alphabetically',
-        priority: 1,
-      );
-
-      changeBuilder.addDartFileEdit((builder) {
-        final FormalParameterList? parameterList = node.parameters;
-
-        if (parameterList != null) {
-          parameterList.parameters.sort(
-              (FormalParameter first, FormalParameter second) =>
-                  first.name.toString().compareTo(second.name.toString()));
-          builder.addSimpleReplacement(
-            SourceRange(parameterList.offset, parameterList.length),
-            parameterList.toSource(),
-          );
-        }
-      });
-    });
-  }
-}
