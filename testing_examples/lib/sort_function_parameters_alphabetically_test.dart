@@ -1,42 +1,111 @@
+void function1(
+  int a,
+  String b,
+  double c,
+) {}
+
 // expect_lint: sort_function_parameters_alphabetically
-void unsortedFunctionParameters({
-  required int c,
-  required int b,
+void function1Unsorted(
+  double c,
+  String b,
+  int a,
+) {}
+
+void function2(
+  int a,
+  String b, {
+  required double c,
+}) {}
+
+// expect_lint: sort_function_parameters_alphabetically
+void function2unsorted(
+  double c,
+  String b, {
   required int a,
 }) {}
 
-void unsortedFunctionParameters2(
-  int c,
+void function3(
+  int a, {
+  required String b,
+  required double c,
+}) {}
+
+// expect_lint: sort_function_parameters_alphabetically
+void function3Unsorted(
+  double c,
   double d, {
-  required int a,
-  required int b,
-}) {}
-
-// expect_lint: sort_function_parameters_alphabetically
-void unsortedFunctionParameters3(
-  int c,
-  double d, {
-  required int b,
+  required String b,
   required int a,
 }) {}
 
 // expect_lint: sort_function_parameters_alphabetically
-void unsortedFunctionParameters4(
-  int d,
-  double c, {
-  required int a,
-  required int b,
-}) {}
-
-// expect_lint: sort_function_parameters_alphabetically
-void unsortedFunctionParameters4(
+void function3Unsorted2(
   double d,
-  int c, {
+  double c, {
+  required String a,
   required int b,
-  required int a,
 }) {}
 
-void test() {
-// expect_lint: sort_method_arguments_alphabetically
-  unsortedFunctionParameters(c: 1, b: 1, a: 1);
+void function3Unsorted3(
+  double c,
+  double d, {
+  required String a,
+  required int b,
+}) {}
+
+class A {
+  void function1(
+    int a,
+    String b,
+    double c,
+  ) {}
+
+  // expect_lint: sort_function_parameters_alphabetically
+  void function1Unsorted(
+    double c,
+    String b,
+    int a,
+  ) {}
+
+  void function2(
+    int a,
+    String b, {
+    required double c,
+  }) {}
+
+  // expect_lint: sort_function_parameters_alphabetically
+  void function2unsorted(
+    double c,
+    String b, {
+    required int a,
+  }) {}
+
+  void function3(
+    int a, {
+    required String b,
+    required double c,
+  }) {}
+
+  // expect_lint: sort_function_parameters_alphabetically
+  void function3Unsorted(
+    double c,
+    double d, {
+    required String b,
+    required int a,
+  }) {}
+
+  // expect_lint: sort_function_parameters_alphabetically
+  void function3Unsorted2(
+    double d,
+    double c, {
+    required String a,
+    required int b,
+  }) {}
+
+  void function3Unsorted3(
+    double c,
+    double d, {
+    required String a,
+    required int b,
+  }) {}
 }

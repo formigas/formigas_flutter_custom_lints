@@ -11,14 +11,27 @@ void checkAlphabeticallySorted(
   ExecutableElement? element,
   ErrorReporter reporter,
 ) {
-  List<ParameterElement>? parameters = element?.parameters;
-  List<ParameterElement>? sortedParameters = parameters?.sortedByCompare(
-      (element) => element.name, (a, b) => a.compareTo(b));
+  List<ParameterElement>? namedParameters =
+      element?.parameters.where((element) => element.isNamed).toList();
+  List<ParameterElement>? positionalParameters =
+      element?.parameters.where((element) => element.isPositional).toList();
+  List<ParameterElement>? sortedNamedParameters = namedParameters
+      ?.sortedByCompare((element) => element.name, (a, b) => a.compareTo(b));
+
+  List<ParameterElement>? sortedPositionalParameters = positionalParameters
+      ?.sortedByCompare((element) => element.name, (a, b) => a.compareTo(b));
 
   if (element != null &&
-      parameters != null &&
-      sortedParameters != null &&
-      !IterableEquality().equals(parameters, sortedParameters)) {
+      namedParameters != null &&
+      sortedNamedParameters != null &&
+      (!IterableEquality().equals(
+            namedParameters,
+            sortedNamedParameters,
+          ) ||
+          !IterableEquality().equals(
+            positionalParameters,
+            sortedPositionalParameters,
+          ))) {
     reporter.reportErrorForElement(code, element);
   }
 }

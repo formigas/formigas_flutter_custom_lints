@@ -6,8 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:formigas_flutter_lints/lints/sorting/common.dart';
 
-class SortFunctionParametersAlphabetically extends DartLintRule {
-  SortFunctionParametersAlphabetically() : super(code: _code);
+class SortFunctionDeclarationParametersAlphabetically extends DartLintRule {
+  SortFunctionDeclarationParametersAlphabetically() : super(code: _code);
 
   static const _code = LintCode(
     name: 'sort_function_parameters_alphabetically',
@@ -20,6 +20,10 @@ class SortFunctionParametersAlphabetically extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
+    context.registry.addMethodDeclaration((node) {
+      checkAlphabeticallySorted(code, node.declaredElement, reporter);
+    });
+
     context.registry.addFunctionDeclaration((node) {
       checkAlphabeticallySorted(code, node.declaredElement, reporter);
     });
@@ -27,44 +31,11 @@ class SortFunctionParametersAlphabetically extends DartLintRule {
 
   @override
   List<Fix> getFixes() => [
-        SortFunctionParameterListAlphabeticallyFix(),
+        SortFunctionParametersAlphabeticallyFix(),
       ];
 }
 
-class SortFunctionInvocationArgumentsAlphabetically extends DartLintRule {
-  SortFunctionInvocationArgumentsAlphabetically() : super(code: _code);
-
-  static const _code = LintCode(
-    name: 'sort_function_invocation_arguments_alphabetically',
-    problemMessage: 'Sort function invocation arguments alphabetically.',
-  );
-
-  @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
-    context.registry.addFunctionExpressionInvocation((node) {
-      ArgumentList arguments = node.argumentList;
-      List<Expression> sortedParameters = arguments.arguments.sortedByCompare(
-          (Expression element) => element.staticParameterElement?.name,
-          (String? a, String? b) => b == null ? 0 : a?.compareTo(b) ?? 0);
-
-      if (!IterableEquality()
-          .equals(arguments.arguments.toList(), sortedParameters)) {
-        reporter.reportErrorForNode(code, node);
-      }
-    });
-  }
-
-  @override
-  List<Fix> getFixes() => [
-        SortFunctionInvocationArgumentsAlphabeticallyFix(),
-      ];
-}
-
-class SortFunctionParameterListAlphabeticallyFix extends DartFix {
+class SortFunctionParametersAlphabeticallyFix extends DartFix {
   @override
   void run(
     CustomLintResolver resolver,
@@ -82,54 +53,51 @@ class SortFunctionParameterListAlphabeticallyFix extends DartFix {
       );
       FormalParameterList? parameterList = node.functionExpression.parameters;
 
-      changeBuilder.addDartFileEdit((builder) {
-        if (parameterList != null) {
-          parameterList.parameters.sort(
-              (FormalParameter first, FormalParameter second) =>
-                  first.name.toString().compareTo(second.name.toString()));
-          builder.addSimpleReplacement(
-            SourceRange(parameterList.offset, parameterList.length),
-            parameterList.toSource(),
-          );
-        }
-      });
+      fixSorting(
+        changeBuilder: changeBuilder,
+        parameterList: parameterList,
+      );
     });
-  }
-}
 
-class SortFunctionInvocationArgumentsAlphabeticallyFix extends DartFix {
-  @override
-  void run(
-    CustomLintResolver resolver,
-    ChangeReporter reporter,
-    CustomLintContext context,
-    AnalysisError analysisError,
-    List<AnalysisError> others,
-  ) {
-    context.registry.addFunctionExpressionInvocation((
-      FunctionExpressionInvocation node,
-    ) {
+    context.registry.addMethodDeclaration((node) {
       if (!analysisError.sourceRange.intersects(node.sourceRange)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
-        message: 'Sort arguments alphabetically',
+        message: 'Sort parameters alphabetically',
         priority: 1,
       );
-      ArgumentList argumentList = node.argumentList;
-      var offset = argumentList.offset;
-      var length = argumentList.length;
+      FormalParameterList? parameterList = node.parameters;
 
-      changeBuilder.addDartFileEdit((builder) {
-        argumentList.arguments.sort((Expression first, Expression second) {
-          return first.staticParameterElement?.name
-                  .compareTo(second.staticParameterElement?.name ?? '') ??
-              0;
+      fixSorting(
+        changeBuilder: changeBuilder,
+        parameterList: parameterList,
+      );
+    });
+  }
+
+  void fixSorting({
+    required ChangeBuilder changeBuilder,
+    required FormalParameterList? parameterList,
+  }) {
+    changeBuilder.addDartFileEdit((builder) {
+      if (parameterList != null) {
+        parameterList.parameters
+            .sort((FormalParameter first, FormalParameter second) {
+          if (first.isPositional && second.isPositional) {
+            return first.name.toString().compareTo(second.name.toString());
+          } else if (first.isNamed && second.isNamed) {
+            return first.name.toString().compareTo(second.name.toString());
+          } else if (first.isPositional) {
+            return -1;
+          } else {
+            return 1;
+          }
         });
         builder.addSimpleReplacement(
-          SourceRange(offset, length),
-          argumentList.toSource(),
+          SourceRange(parameterList.offset, parameterList.length),
+          parameterList.toSource(),
         );
-      });
+      }
     });
   }
 }
