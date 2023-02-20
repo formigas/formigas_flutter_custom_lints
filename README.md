@@ -20,7 +20,7 @@ analyzer:
 dev_dependencies:
   custom_lint: <current_version>
   formigas_flutter_lints:
-    path: <path to this repo/formigas_flutter_lints>
+    path: <path to this repo>
 ```
 
 ## Run the lints
