@@ -37,3 +37,41 @@ class A {
     required this.a,
   });
 }
+
+class B {
+  final int id;
+  final int anotherOne;
+  final int thisHere;
+
+  // expect_lint: sort_constructor_parameters_alphabetically
+  const B({
+    required this.thisHere,
+    required this.id,
+    required this.anotherOne,
+  });
+}
+
+class C {
+  final int key;
+  final int anotherSuperParam;
+
+  C(
+    this.anotherSuperParam,
+    this.key,
+  );
+}
+
+class D extends C {
+  final int a;
+  D(
+    super.anotherSuperParam,
+    super.key,
+    this.a,
+  );
+
+  D.second(
+    this.a,
+    super.anotherSuperParam,
+    super.key,
+  );
+}

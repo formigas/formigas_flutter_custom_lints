@@ -22,7 +22,11 @@ class SortConstructorDeclarationParametersAlphabetically extends DartLintRule {
   ) {
     context.registry
         .addConstructorDeclaration((final ConstructorDeclaration node) {
-      checkAlphabeticallySorted(_code, node.declaredElement, reporter);
+      checkAlphabeticallySortedConstructor(
+        _code,
+        node.declaredElement,
+        reporter,
+      );
     });
   }
 

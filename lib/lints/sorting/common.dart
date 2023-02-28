@@ -45,19 +45,78 @@ void checkAlphabeticallySorted(
   }
 }
 
+void checkAlphabeticallySortedConstructor(
+  final ErrorCode code,
+  final ExecutableElement? element,
+  final ErrorReporter reporter,
+) {
+  final List<ParameterElement>? namedParameters = element?.parameters
+      .where(
+        (final ParameterElement element) =>
+            element.isNamed && !element.isSuperFormal,
+      )
+      .toList();
+  final List<ParameterElement>? superParameters = element?.parameters
+      .where((final ParameterElement element) => element.isSuperFormal)
+      .toList();
+  final List<ParameterElement>? positionalParameters = element?.parameters
+      .where(
+        (final ParameterElement element) =>
+            element.isPositional && !element.isSuperFormal,
+      )
+      .toList();
+
+  final List<ParameterElement>? sortedNamedParameters =
+      namedParameters?.sortedByCompare(
+    (final ParameterElement element) => element.name,
+    (final String a, final String b) => a.compareTo(b),
+  );
+  final List<ParameterElement>? sortedSuperParameters =
+      superParameters?.sortedByCompare(
+    (final ParameterElement element) => element.name,
+    (final String a, final String b) => a.compareTo(b),
+  );
+  final List<ParameterElement>? sortedPositionalParameters =
+      positionalParameters?.sortedByCompare(
+    (final ParameterElement element) => element.name,
+    (final String a, final String b) => a.compareTo(b),
+  );
+
+  if (element != null &&
+      namedParameters != null &&
+      sortedSuperParameters != null &&
+      sortedNamedParameters != null &&
+      (!const IterableEquality<ParameterElement>().equals(
+            namedParameters,
+            sortedNamedParameters,
+          ) ||
+          !const IterableEquality<ParameterElement>().equals(
+            positionalParameters,
+            sortedPositionalParameters,
+          ) ||
+          !const IterableEquality<ParameterElement>().equals(
+            superParameters,
+            sortedSuperParameters,
+          ))) {
+    reporter.reportErrorForElement(code, element);
+  }
+}
+
 void checkAlphabeticallySortedArguments(
   final ErrorCode code,
   final ArgumentList? arguments,
   final ErrorReporter reporter,
 ) {
-  final List<Expression>? sortedParameters = arguments?.arguments.sortedByCompare(
+  final List<Expression>? sortedParameters =
+      arguments?.arguments.sortedByCompare(
     (final Expression element) => element.staticParameterElement?.name,
     (final String? a, final String? b) => b == null ? 0 : a?.compareTo(b) ?? 0,
   );
 
   if (arguments != null &&
       sortedParameters != null &&
-      !const IterableEquality<Expression>().equals(arguments.arguments, sortedParameters)) {
+      !const IterableEquality<Expression>()
+          .equals(arguments.arguments, sortedParameters)) {
     reporter.reportErrorForOffset(code, sortedParameters.first.offset, 1);
   }
 }
