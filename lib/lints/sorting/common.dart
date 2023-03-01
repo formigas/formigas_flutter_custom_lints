@@ -69,7 +69,19 @@ void checkAlphabeticallySortedConstructor(
   final List<ParameterElement>? sortedNamedParameters =
       namedParameters?.sortedByCompare(
     (final ParameterElement element) => element.name,
-    (final String a, final String b) => a.compareTo(b),
+    (final String a, final String b) {
+      if (a == 'id') {
+        return -1;
+      } else if (b == 'id') {
+        return 1;
+      } else if (a.endsWith('Id')) {
+        return -1;
+      } else if (b.endsWith('Id')) {
+        return 1;
+      } else {
+        return a.compareTo(b);
+      }
+    },
   );
   final List<ParameterElement>? sortedSuperParameters =
       superParameters?.sortedByCompare(
@@ -77,10 +89,21 @@ void checkAlphabeticallySortedConstructor(
     (final String a, final String b) => a.compareTo(b),
   );
   final List<ParameterElement>? sortedPositionalParameters =
-      positionalParameters?.sortedByCompare(
-    (final ParameterElement element) => element.name,
-    (final String a, final String b) => a.compareTo(b),
-  );
+      positionalParameters
+          ?.sortedByCompare((final ParameterElement element) => element.name,
+              (final String a, final String b) {
+    if (a == 'id') {
+      return -1;
+    } else if (b == 'id') {
+      return 1;
+    } else if (a.endsWith('Id')) {
+      return -1;
+    } else if (b.endsWith('Id')) {
+      return 1;
+    } else {
+      return a.compareTo(b);
+    }
+  });
 
   if (element != null &&
       namedParameters != null &&
@@ -129,10 +152,20 @@ void fixParameterSorting({
     if (parameterList != null) {
       parameterList.parameters
           .sort((final FormalParameter first, final FormalParameter second) {
-        if (first.isPositional && second.isPositional) {
-          return first.name.toString().compareTo(second.name.toString());
+        final String firstName = first.name.toString();
+        final String secondName = second.name.toString();
+
+        final bool firstIsId = firstName.endsWith('Id') || firstName == 'id';
+        final bool secondIsId = secondName.endsWith('Id') || secondName == 'id';
+
+        if (firstIsId) {
+          return -1;
+        } else if (secondIsId) {
+          return 1;
+        } else if (first.isPositional && second.isPositional) {
+          return firstName.compareTo(secondName);
         } else if (first.isNamed && second.isNamed) {
-          return first.name.toString().compareTo(second.name.toString());
+          return firstName.compareTo(secondName);
         } else if (first.isPositional) {
           return -1;
         } else {
